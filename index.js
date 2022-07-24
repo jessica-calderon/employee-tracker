@@ -122,7 +122,7 @@ const viewAll = (table) => {
   }
   
   const addRole = () => {
-    //get the list of all department with department_id to make the choices object list for prompt question
+    // get depts with department_id to make the choices object
     const departments = [];
     connection.query("SELECT * FROM DEPARTMENT", (err, res) => {
       if (err) throw err;
@@ -135,7 +135,7 @@ const viewAll = (table) => {
         departments.push(qObj);
       });
   
-      //question list to get arguments for making new roles
+      //  role questions
       let questions = [
         {
           type: "input",
@@ -169,3 +169,132 @@ const viewAll = (table) => {
       });
     });
   }
+  const addEmployee = () => {
+    // get all the employees for mgr selection
+    connection.query("SELECT * FROM EMPLOYEE", (err, res) => {
+      if (err) throw err;
+      const employeeSelection = [
+        {
+          name: 'None',
+          value: 0
+        }
+      ]; // manager n/a
+      res.forEach(({ first_name, last_name, id }) => {
+        employeeSelection.push({
+          name: first_name + " " + last_name,
+          value: id
+        });
+      });
+      
+      // get all roles
+      connection.query("SELECT * FROM ROLE", (err, res) => {
+        if (err) throw err;
+        const roleSelection = [];
+        res.forEach(({ title, id }) => {
+          roleSelection.push({
+            name: title,
+            value: id
+            });
+          });
+       
+        let questions = [
+          {
+            type: "input",
+            name: "first_name",
+            message: "What is the employee's first name?"
+          },
+          {
+            type: "input",
+            name: "last_name",
+            message: "What is the employee's last name?"
+          },
+          {
+            type: "list",
+            name: "role_id",
+            choices: roleSelection,
+            message: "What is the employee's role?"
+          },
+          {
+            type: "list",
+            name: "manager_id",
+            choices: employeeSelection,
+            message: "Who is the employee's manager?"
+          }
+        ]
+    
+        inquirer.prompt(questions)
+          .then(response => {
+            const query = `INSERT INTO EMPLOYEE (first_name, last_name, role_id, manager_id) VALUES (?)`;
+            let manager_id = response.manager_id !== 0? response.manager_id: null;
+            connection.query(query, [[response.first_name, response.last_name, response.role_id, manager_id]], (err, res) => {
+              if (err) throw err;
+              console.log(`Successfully added employee ${response.first_name} ${response.last_name} with id ${res.insertId}`);
+              questionPrompt();
+            });
+          })
+          .catch(err => {
+            console.error(err);
+          });
+      })
+    });
+  }
+  
+  const updateRole = () => {
+    // get all employees 
+    connection.query("SELECT * FROM EMPLOYEE", (err, res) => {
+      if (err) throw err;
+      const employeeSelection = [];
+      res.forEach(({ first_name, last_name, id }) => {
+        employeeSelection.push({
+          name: first_name + " " + last_name,
+          value: id
+        });
+      });
+      
+      // get all roles 
+      connection.query("SELECT * FROM ROLE", (err, res) => {
+        if (err) throw err;
+        const roleSelection = [];
+        rs.forEach(({ title, id }) => {
+          roleSelection.push({
+            name: title,
+            value: id
+            });
+          });
+       
+        let questions = [
+          {
+            type: "list",
+            name: "id",
+            choices: employeeSelection,
+            message: "Which employee role would you like to update?"
+          },
+          {
+            type: "list",
+            name: "role_id",
+            choices: roleSelection,
+            message: "What is the employee's new role?"
+          }
+        ]
+    
+        inquirer.prompt(questions)
+          .then(response => {
+            const query = `UPDATE EMPLOYEE SET ? WHERE ?? = ?;`;
+            connection.query(query, [
+              {role_id: response.role_id},
+              "id",
+              response.id
+            ], (err, res) => {
+              if (err) throw err;
+              
+              console.log("Successfully updated employee's role!");
+              questionPrompt();
+            });
+          })
+          .catch(err => {
+            console.error(err);
+          });
+        })
+    });
+  }
+  
