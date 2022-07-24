@@ -410,3 +410,117 @@ const updateManager = () => {
     })
 
 };
+const deleteDept = () => {
+    // set dept array
+    const departments = [];
+    // get all depts
+    connection.query("SELECT * FROM DEPARTMENT", (err, res) => {
+        if (err) throw err;
+
+        res.forEach(dep => {
+            let dept = {
+                name: dep.name,
+                value: dep.id
+            }
+            departments.push(dept);
+        });
+
+        let questions = [
+            {
+                type: "list",
+                name: "id",
+                choices: departments,
+                message: "Which department would you like to delete?"
+            }
+        ];
+
+        inquirer.prompt(questions)
+            .then(response => {
+                const query = `DELETE FROM DEPARTMENT WHERE id = ?`;
+                connection.query(query, [response.id], (err, res) => {
+                    if (err) throw err;
+                    console.log(`${res.affectedRows} successfully deleted!`);
+                    questionPrompt();
+                });
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    });
+};
+
+const deleteRole = () => {
+    // set dept empty array    
+    const departments = [];
+    // get all roles
+    connection.query("SELECT * FROM ROLE", (err, res) => {
+        if (err) throw err;
+
+        const roleChoice = [];
+        res.forEach(({ title, id }) => {
+            roleChoice.push({
+                name: title,
+                value: id
+            });
+        });
+
+        let questions = [
+            {
+                type: "list",
+                name: "id",
+                choices: roleChoice,
+                message: "What role would you like to delete?"
+            }
+        ];
+
+        inquirer.prompt(questions)
+            .then(response => {
+                const query = `DELETE FROM ROLE WHERE id = ?`;
+                connection.query(query, [response.id], (err, res) => {
+                    if (err) throw err;
+                    console.log(`${res.affectedRows} successfully deleted!`);
+                    questionPrompt();
+                });
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    });
+};
+
+const deleteEmployee = () => {
+    // get all employees
+    connection.query("SELECT * FROM EMPLOYEE", (err, res) => {
+        if (err) throw err;
+        // set employee array
+        const employeeSelection = [];
+        res.forEach(({ first_name, last_name, id }) => {
+            employeeSelection.push({
+                name: first_name + " " + last_name,
+                value: id
+            });
+        });
+
+        let questions = [
+            {
+                type: "list",
+                name: "id",
+                choices: employeeSelection,
+                message: "Which employee would you like to delete?"
+            }
+        ];
+
+        inquirer.prompt(questions)
+            .then(response => {
+                const query = `DELETE FROM EMPLOYEE WHERE id = ?`;
+                connection.query(query, [response.id], (err, res) => {
+                    if (err) throw err;
+                    console.log(`${res.affectedRows} successfully deleted!`);
+                    questionPrompt();
+                });
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    });
+};
