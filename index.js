@@ -2,6 +2,7 @@ require('dotenv').config();
 const mysql = require('mysql');
 const inquirer = require('inquirer');
 const cTable = require('console.table');
+// ascii art loader
 const figlet = require('figlet');
 
 const connection = mysql.createConnection({
@@ -16,7 +17,7 @@ const connection = mysql.createConnection({
 connection.connect((err) => {
   if (err) throw err;
   console.log(`Connected\n`);
-  figlet('Employee tracker', function(err, data) {
+  figlet('Employee Tracker', function(err, data) {
     if (err) {
       console.log('ASCII not loaded');
     } else {
@@ -30,7 +31,7 @@ function questionPrompt() {
   const firstQuestion = [{
     type: "list",
     name: "action",
-    message: "what would you like to do?",
+    message: "Please choose one of the following options",
     loop: false,
     choices: ["View all employees", "View all roles", "View all departments", "Add a new employee", "Add a new role", "Add a new department", "Update an employee role", "Update an employee's manager", "View employees by manager", "Delete a department", "Delete a role", "Delete an employee", "View the total utilized budget of a department", "Exit"]
   }]
@@ -96,7 +97,7 @@ const selectAll = (table) => {
     query = `SELECT R.id AS id, title, salary, D.name AS department
     FROM ROLE AS R LEFT JOIN DEPARTMENT AS D
     ON R.department_id = D.id;`;
-  } else {//employee
+  } else {
     query = `SELECT E.id AS id, E.first_name AS first_name, E.last_name AS last_name, 
     R.title AS role, D.name AS department, CONCAT(M.first_name, " ", M.last_name) AS manager
     FROM EMPLOYEE AS E LEFT JOIN ROLE AS R ON E.role_id = R.id

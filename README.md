@@ -27,9 +27,12 @@ The application is covered under the following license: <br>
 
 ## [Usage](#table-of-contents)
 * Add departments, roles, and employees
+* View all departments, roles, employees, and managers
+* Update employee role, department, managers
+* Delete employee, role, department, managers
 
 ## [Testing](#table-of-contents)
-`git clone https://github.com/jessica-calderon/employee-tracker`
+N/A
 
 ## [Contributing](#table-of-contents)
 
@@ -37,11 +40,14 @@ Thank you for your interest in contributing to this project, however, I am curre
       
 
 ## [Installation](#table-of-contents)
-https://github.com/jessica-calderon/employee-tracker
+* `git clone https://github.com/jessica-calderon/employee-tracker`
+* Install all dependencies from root project folder using
+`npm install`
+* Run program using `node server`
 
 ## [Application Preview](#table-of-contents)
 Click the image to see the live demo.
-<a href='n' alt='preview video link'><img src='n'></a>
+<a href='https://drive.google.com/file/d/1LsfNWkI8IHGf25rd3jKkAXWGfmshYEEk/view' alt='preview video link'><img src='./assets/images/employee-tracker.png'></a>
 ## [Questions](#table-of-contents)
 Questions? Please contact me at the following links: <br>
 [GitHub](https://github.com/jessica-calderon) <br>
